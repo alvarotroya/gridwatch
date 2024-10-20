@@ -33,20 +33,26 @@ definitions of routes, data model entities and their database representation.
 
 ## Implementing the solution
 
-### Setting up the data model
-
 After setting up a Hello World example and the main structure for the project,
-I proceeded to work on getting the server connected to a database. I decided to
-use an ORM for wase of use and developer ergonomics. This allows me to reuse a
-lot of the logic for DB CRUD operations without having to write custom SQL
-queries which are not required for now. I am using SQLAlchemy and used GenAI to
-set up the code responsible for establishing a connection. Reason: the FastAPI
-documentation has removed the code snippet to set this up as they now favor
-`SQLModel`, an ORM package different than `SQLAlchemy`.
+I proceeded to work on getting the server connected to a database.
 
 ### Setting up the DB
 
-I'm using PostgreSQL running on Docker. Reason: Data Model is clearly structured and
-PostgreSQL scales very well within the expected load.
+I'm using PostgreSQL running on Docker. Reason: Data Model is clearly
+structured and PostgreSQL scales very well within the expected load.
 
-Docker compose came from GenAI.
+Eventually, the database will probably become the bottleneck but we can deal
+with that later by sharding or using replicas or moving to something like
+DynamoDB or Cassandra.
+
+Docker compose came from GenAI. I just extracted the credentials to a
+`.env-example` file.
+
+### Setting up the data model
+
+I decided to use an ORM for wase of use and developer ergonomics. This allows
+me to reuse a lot of the logic for DB CRUD operations without having to write
+custom SQL queries which are not required for now. I am using SQLAlchemy and
+used GenAI to set up the code responsible for establishing a connection.
+Reason: the FastAPI documentation has removed the code snippet to set this up
+as they now favor `SQLModel`, an ORM package different than `SQLAlchemy`.
