@@ -2,7 +2,7 @@
 
 ## Globomantics Datenmanagement
 
-### Globomantics heutiges Setup:
+### Globomantics heutiges Setup
 
 Unsere Kunden können heute ihre Ortsnetzstationen über unsere Web-App pflegen.
 Eine Station hat eine Adresse und besteht aus >=1 Trafo. Jeder Trafo hat >=1
@@ -31,14 +31,7 @@ Messdaten der verschiedenen Messgeräte entgegennehmen und speichern. Es sollte
 auch möglich sein, die Messdaten einer Station für einen bestimmten Zeitbereich
 abzufragen.
 2. Wir würdest dein gewähltes Datenmodell erweitern, um die oben beschriebenen
-   zukünftigen Daten zu integrieren? Randbedingungen Du kannst eine der
-folgenden Programmiersprachen verwenden, um die Aufgabe zu erledigen: Go,
-Python oder Kotlin. Wenn du möchtest, kannst du vorhandene Frameworks oder
-Libraries verwenden, um die Aufgabe zu lösen. Kennzeichne gern deinen Einsatz
-von Generative AI. Evaluierung Deine Lösung sollte deine Fähigkeiten
-demonstrieren guten production-level code zu schreiben mit allem, was
-dazugehört und uns zeigen, wie du Software konzeptionierst und an
-Problemstellungen herangehst.
+   zukünftigen Daten zu integrieren?
 
 ### Randbedingungen
 
