@@ -7,3 +7,4 @@ gridwatch.egg-info
 htmlcov
 .cache
 .venv
+.env

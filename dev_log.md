@@ -49,3 +49,4 @@ documentation has removed the code snippet to set this up as they now favor
 I'm using PostgreSQL running on Docker. Reason: Data Model is clearly structured and
 PostgreSQL scales very well within the expected load.
 
+Docker compose came from GenAI.
