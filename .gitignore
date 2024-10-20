@@ -1,5 +1,6 @@
 __pycache__
-app.egg-info
+gridwatch/__pycache__
+gridwatch.egg-info
 *.pyc
 .mypy_cache
 .coverage
