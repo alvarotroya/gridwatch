@@ -56,3 +56,19 @@ custom SQL queries which are not required for now. I am using SQLAlchemy and
 used GenAI to set up the code responsible for establishing a connection.
 Reason: the FastAPI documentation has removed the code snippet to set this up
 as they now favor `SQLModel`, an ORM package different than `SQLAlchemy`.
+
+#### Adding stations
+
+Data model
+
+- Added a customer entity to separate data between different customers.
+Column is nullable for now for easier testing. Auth & RBAC is out of scope for
+now.
+- Kept all column types as Strings(=varchar 255) for simplicity.
+- For better UX, we should add an endpoint to produce address suggestions based
+on user input via a third-party API. This gives us the exact coordinates of the
+location which would allow map visualizations. For now, coordinates are optional.
+
+Endpoints
+
+- No auth for now. Users can access all the data.

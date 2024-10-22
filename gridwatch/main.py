@@ -1,16 +1,22 @@
-from fastapi import FastAPI
+from typing import Annotated
+
+from fastapi import Depends, FastAPI
+from sqlalchemy.orm import Session
 
 from gridwatch import database
-
-# TODO: this is only here to make sure that entities are registered before creating tables, this will happen automatically later
 from gridwatch.models import customers  # noqa
+from gridwatch.routers.stations import router as stations_router
 
 app = FastAPI()
+
+SessionDep = Annotated[Session, Depends(database.get_db)]
 
 # NOTE: This should happen with a migration tool like alembic. For now, this suffices
 database.create_tables_if_not_existent()
 
+app.include_router(stations_router, tags=["Stations"])
 
-@app.get("/")
+
+@app.get("/", tags=["Root"])
 async def root():
-    return {"message": "Hello World"}
+    return {"status": "up"}
