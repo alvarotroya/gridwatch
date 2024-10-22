@@ -7,6 +7,8 @@ class StationModel(Base):
     __tablename__ = "stations"
 
     id = Column(UUID, primary_key=True, index=True)
+    external_id = Column(String, nullable=True)
+
     name = Column(String)
     customer_id = Column(UUID, ForeignKey("customers.id"))
     street = Column(String)
