@@ -7,6 +7,7 @@ from gridwatch import database
 from gridwatch.crud.exceptions import DatabaseEntityNotFound
 from gridwatch.models import customers  # noqa
 from gridwatch.routers.connections import router as connections_router
+from gridwatch.routers.devices import router as devices_router
 from gridwatch.routers.stations import router as stations_router
 from gridwatch.routers.transformers import router as transformers_router
 
@@ -20,6 +21,7 @@ database.create_tables_if_not_existent()
 app.include_router(stations_router, tags=["Stations"])
 app.include_router(transformers_router, tags=["Transformers"])
 app.include_router(connections_router, tags=["Connections"])
+app.include_router(devices_router, tags=["Devices"])
 
 
 # Global error handling for uncatched `DatabaseEntityNotFound` errors -> return 404

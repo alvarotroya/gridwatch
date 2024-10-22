@@ -9,7 +9,7 @@ class ConnectionModel(Base):
     id = Column(UUID, primary_key=True, index=True)
     name = Column(String)
     customer_id = Column(UUID, ForeignKey("customers.id"))
-    transformer_id = Column(UUID, ForeignKey("transformer.id"), nullable=False)
+    transformer_id = Column(UUID, ForeignKey("transformers.id"), nullable=False)
 
     external_id = Column(String, nullable=True)
 

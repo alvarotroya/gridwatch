@@ -72,3 +72,23 @@ location which would allow map visualizations. For now, coordinates are optional
 Endpoints
 
 - No auth for now. Users can access all the data.
+
+#### Adding transformers, connections and devices
+
+Data model
+
+- Added an `external_id` field to allow for better integrations with existing systems.
+- Kept transformers and connections slim, skipped distributors as another
+entity won't make difference for the first iteration.
+- Added device types and component types to devices. Allows to record all
+devices in the same table. This is simple enough to begin with and makes it
+easier to extend to new devices or devices been moved across components.
+- Configs and specs are JSON objects. Configs should probably be reusable across
+devices. Figuring out if this is a requirement is out of scope for now.
+Can be easily changed in the future.
+
+Endpoints
+
+- A PATCH request to specific fields in a device config/spec will not work as
+expected :/ They will replace the whole config/spec, instead of updating the
+specified fields only. Left a comment in the code, should be fixed before prod :)
