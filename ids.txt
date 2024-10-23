@@ -1,0 +1,13 @@
+station_id 8176c52e-7234-4ef9-97f1-db2cab4477c8
+transformer_id eccb78cb-277d-4145-b17a-d54bf54bdc45
+connection_id 2d3900dd-375c-4a50-83f9-953411b50f57
+
+device_id 8838cc84-08db-4d80-8be5-7ea0b9b6b915
+device_id 233f8e91-8214-4e15-a2b4-a7018f4f47a6
+
+
+# as JSON
+"station_id": "8176c52e-7234-4ef9-97f1-db2cab4477c8",
+"transformer_id": "eccb78cb-277d-4145-b17a-d54bf54bdc45",
+"connection_id": "2d3900dd-375c-4a50-83f9-953411b50f57",
+"device_id": "8838cc84-08db-4d80-8be5-7ea0b9b6b915",

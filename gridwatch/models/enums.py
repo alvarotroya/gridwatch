@@ -11,6 +11,11 @@ class DeviceType(str, Enum):
     SENSOR_1 = "sensor_1"
 
 
+class MeasurementType(str, Enum):
+    VOLTAGE = "voltage"
+    CURRENT = "current"
+
+
 class HealthStatus(str, Enum):
     OK = "ok"
     DETERIORATED = "deteriorated"
