@@ -25,11 +25,10 @@ class MeasurementSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class MeasurementCreateSchema(BaseModel):
+class MeasurementAPICreateSchema(BaseModel):
+    """This is the payload used to create a new measurement."""
+
     id: UUID = uuid4()
-    station_id: UUID | None = None
-    transformer_id: UUID | None = None
-    connection_id: UUID | None = None
     device_id: UUID
 
     value: float
@@ -37,6 +36,14 @@ class MeasurementCreateSchema(BaseModel):
 
     measured_at: datetime
     sent_at: datetime
+
+
+class MeasurementDatabaseCreateSchema(MeasurementAPICreateSchema):
+    """This model is used to attach component information to a measurement before persisting it to the DB."""
+
+    station_id: UUID | None = None
+    transformer_id: UUID | None = None
+    connection_id: UUID | None = None
 
 
 class MeasurementUpdateSchema(BaseModel):

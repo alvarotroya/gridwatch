@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from gridwatch.crud.exceptions import DatabaseEntityNotFound
 from gridwatch.models.measurements import MeasurementModel
 from gridwatch.schemas.measurements import (
-    MeasurementCreateSchema,
+    MeasurementDatabaseCreateSchema,
     MeasurementSchema,
     MeasurementUpdateSchema,
 )
@@ -32,7 +32,7 @@ def get_measurement(db: Session, measurement_id: UUID) -> MeasurementSchema:
 
 
 def create_measurement(
-    db: Session, measurement_create: MeasurementCreateSchema
+    db: Session, measurement_create: MeasurementDatabaseCreateSchema
 ) -> MeasurementSchema:
     measurement = MeasurementModel(**measurement_create.model_dump())
     db.add(measurement)
