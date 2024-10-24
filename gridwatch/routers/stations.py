@@ -17,28 +17,31 @@ router = APIRouter()
 DatabaseDep = Annotated[Session, Depends(get_db)]
 
 
+# CRUD endpoints
+
+
 @router.get("/stations", response_model=list[StationSchema])
 def get_stations(db: DatabaseDep) -> list[StationSchema]:
     return crud_stations.get_stations(db)
 
 
-@router.get("/station/{station_id}", response_model=StationSchema)
+@router.get("/stations/{station_id}", response_model=StationSchema)
 def get_station(station_id: UUID, db: DatabaseDep) -> StationSchema:
     return crud_stations.get_station(db, station_id)
 
 
-@router.post("/station", response_model=StationSchema)
+@router.post("/stations", response_model=StationSchema)
 def post_station(station_create: StationCreateSchema, db: DatabaseDep) -> StationSchema:
     return crud_stations.create_station(db, station_create)
 
 
-@router.patch("/station/{station_id}", response_model=StationSchema)
+@router.patch("/stations/{station_id}", response_model=StationSchema)
 def patch_station(
     station_id: UUID, station_update: StationUpdateSchema, db: DatabaseDep
 ) -> StationSchema:
     return crud_stations.update_station(db, station_id, station_update)
 
 
-@router.delete("/station/{station_id}", response_model=StationSchema)
+@router.delete("/stations/{station_id}", response_model=StationSchema)
 def delete_station(station_id: UUID, db: DatabaseDep) -> StationSchema:
     return crud_stations.delete_station(db, station_id)

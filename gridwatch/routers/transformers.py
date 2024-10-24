@@ -22,25 +22,25 @@ def get_transformers(db: DatabaseDep) -> list[TransformerSchema]:
     return crud_transformers.get_transformers(db)
 
 
-@router.get("/transformer/{transformer_id}", response_model=TransformerSchema)
+@router.get("/transformers/{transformer_id}", response_model=TransformerSchema)
 def get_transformer(transformer_id: UUID, db: DatabaseDep) -> TransformerSchema:
     return crud_transformers.get_transformer(db, transformer_id)
 
 
-@router.post("/transformer", response_model=TransformerSchema)
+@router.post("/transformers", response_model=TransformerSchema)
 def post_transformer(
     transformer_create: TransformerCreateSchema, db: DatabaseDep
 ) -> TransformerSchema:
     return crud_transformers.create_transformer(db, transformer_create)
 
 
-@router.patch("/transformer/{transformer_id}", response_model=TransformerSchema)
+@router.patch("/transformers/{transformer_id}", response_model=TransformerSchema)
 def patch_transformer(
     transformer_id: UUID, transformer_update: TransformerUpdateSchema, db: DatabaseDep
 ) -> TransformerSchema:
     return crud_transformers.update_transformer(db, transformer_id, transformer_update)
 
 
-@router.delete("/transformer/{transformer_id}", response_model=TransformerSchema)
+@router.delete("/transformers/{transformer_id}", response_model=TransformerSchema)
 def delete_transformer(transformer_id: UUID, db: DatabaseDep) -> TransformerSchema:
     return crud_transformers.delete_transformer(db, transformer_id)

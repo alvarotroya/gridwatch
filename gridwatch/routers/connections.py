@@ -22,25 +22,25 @@ def get_connections(db: DatabaseDep) -> list[ConnectionSchema]:
     return crud_connections.get_connections(db)
 
 
-@router.get("/connection/{connection_id}", response_model=ConnectionSchema)
+@router.get("/connections/{connection_id}", response_model=ConnectionSchema)
 def get_connection(connection_id: UUID, db: DatabaseDep) -> ConnectionSchema:
     return crud_connections.get_connection(db, connection_id)
 
 
-@router.post("/connection", response_model=ConnectionSchema)
+@router.post("/connections", response_model=ConnectionSchema)
 def post_connection(
     connection_create: ConnectionCreateSchema, db: DatabaseDep
 ) -> ConnectionSchema:
     return crud_connections.create_connection(db, connection_create)
 
 
-@router.patch("/connection/{connection_id}", response_model=ConnectionSchema)
+@router.patch("/connections/{connection_id}", response_model=ConnectionSchema)
 def patch_connection(
     connection_id: UUID, connection_update: ConnectionUpdateSchema, db: DatabaseDep
 ) -> ConnectionSchema:
     return crud_connections.update_connection(db, connection_id, connection_update)
 
 
-@router.delete("/connection/{connection_id}", response_model=ConnectionSchema)
+@router.delete("/connections/{connection_id}", response_model=ConnectionSchema)
 def delete_connection(connection_id: UUID, db: DatabaseDep) -> ConnectionSchema:
     return crud_connections.delete_connection(db, connection_id)

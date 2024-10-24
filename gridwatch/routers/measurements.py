@@ -55,19 +55,19 @@ def get_measurements_by_station_id(
     return [MeasurementSchema.model_validate(model) for model in measurements]
 
 
-@router.get("/measurement/{measurement_id}", response_model=MeasurementSchema)
+@router.get("/measurements/{measurement_id}", response_model=MeasurementSchema)
 def get_measurement(measurement_id: UUID, db: DatabaseDep) -> MeasurementSchema:
     return crud_measurements.get_measurement(db, measurement_id)
 
 
-@router.post("/measurement", response_model=MeasurementSchema)
+@router.post("/measurements", response_model=MeasurementSchema)
 def post_measurement(
     measurement_create: MeasurementAPICreateSchema, db: DatabaseDep
 ) -> MeasurementSchema:
     return create_database_measurement(db, measurement_create)
 
 
-@router.post("/measurement:bulk", response_model=list[MeasurementSchema])
+@router.post("/measurements/bulk", response_model=list[MeasurementSchema])
 def post_measurements(
     measurements_create: list[MeasurementAPICreateSchema], db: DatabaseDep
 ) -> list[MeasurementSchema]:
@@ -79,7 +79,7 @@ def post_measurements(
     return results
 
 
-@router.delete("/measurement/{measurement_id}", response_model=MeasurementSchema)
+@router.delete("/measurements/{measurement_id}", response_model=MeasurementSchema)
 def delete_measurement(measurement_id: UUID, db: DatabaseDep) -> MeasurementSchema:
     return crud_measurements.delete_measurement(db, measurement_id)
 
