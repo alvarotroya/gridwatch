@@ -3,6 +3,7 @@ from typing import Annotated
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter, Depends
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
 from gridwatch.crud import measurements as crud_measurements
@@ -50,7 +51,12 @@ def get_measurements_by_station_id(
     if device_id:
         query = query.filter(MeasurementModel.device_id == device_id)
 
-    measurements = query.limit(limit).offset(skip).all()
+    measurements = (
+        query.order_by(desc(MeasurementModel.measured_at))
+        .limit(limit)
+        .offset(skip)
+        .all()
+    )
 
     return [MeasurementSchema.model_validate(model) for model in measurements]
 

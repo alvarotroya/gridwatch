@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
 from gridwatch.crud.exceptions import DatabaseEntityNotFound
@@ -14,7 +15,9 @@ from gridwatch.schemas.measurements import (
 def get_measurements(db: Session) -> list[MeasurementSchema]:
     return [
         MeasurementSchema.model_validate(measurement)
-        for measurement in db.query(MeasurementModel).all()
+        for measurement in db.query(MeasurementModel)
+        .order_by(desc(MeasurementModel.measured_at))
+        .all()
     ]
 
 
