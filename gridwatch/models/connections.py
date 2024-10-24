@@ -1,4 +1,5 @@
 from sqlalchemy import TIMESTAMP, UUID, Column, ForeignKey, String, func
+from sqlalchemy.orm import relationship
 
 from gridwatch.database import Base
 
@@ -16,4 +17,11 @@ class ConnectionModel(Base):
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(
         TIMESTAMP, server_default=func.now(), server_onupdate=func.now()
+    )
+
+    transformer = relationship(
+        "TransformerModel", back_populates="connections", cascade="all"
+    )
+    measurements = relationship(
+        "MeasurementModel", back_populates="connection", cascade="all, delete-orphan"
     )

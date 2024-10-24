@@ -1,4 +1,5 @@
 from sqlalchemy import TIMESTAMP, UUID, Column, Enum, Float, ForeignKey, func
+from sqlalchemy.orm import relationship
 
 from gridwatch.database import Base
 from gridwatch.models.enums import MeasurementType
@@ -24,3 +25,12 @@ class MeasurementModel(Base):
     updated_at = Column(
         TIMESTAMP, server_default=func.now(), server_onupdate=func.now()
     )
+
+    station = relationship("StationModel", back_populates="measurements", cascade="all")
+    transformer = relationship(
+        "TransformerModel", back_populates="measurements", cascade="all"
+    )
+    connection = relationship(
+        "ConnectionModel", back_populates="measurements", cascade="all"
+    )
+    device = relationship("DeviceModel", back_populates="measurements", cascade="all")
