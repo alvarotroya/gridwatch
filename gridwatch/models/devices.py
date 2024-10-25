@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from sqlalchemy import TIMESTAMP, UUID, Column, Enum, ForeignKey, String, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
@@ -9,7 +11,7 @@ from gridwatch.models.enums import ComponentType, DeviceType, HealthStatus
 class DeviceModel(Base):
     __tablename__ = "devices"
 
-    id = Column(UUID, primary_key=True, index=True)
+    id = Column(UUID, primary_key=True, default=uuid4, index=True)
     name = Column(String)
     device_type = Column(Enum(DeviceType))
     component_id = Column(UUID)

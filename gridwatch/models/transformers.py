@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from sqlalchemy import TIMESTAMP, UUID, Column, ForeignKey, String, func
 from sqlalchemy.orm import relationship
 
@@ -7,7 +9,7 @@ from gridwatch.database import Base
 class TransformerModel(Base):
     __tablename__ = "transformers"
 
-    id = Column(UUID, primary_key=True, index=True)
+    id = Column(UUID, primary_key=True, default=uuid4, index=True)
     name = Column(String)
     customer_id = Column(UUID, ForeignKey("customers.id"))
     station_id = Column(UUID, ForeignKey("stations.id"), nullable=False)

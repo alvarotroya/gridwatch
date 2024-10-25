@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from sqlalchemy import TIMESTAMP, UUID, Column, Float, ForeignKey, String, func
 from sqlalchemy.orm import relationship
 
@@ -7,7 +9,7 @@ from gridwatch.database import Base
 class StationModel(Base):
     __tablename__ = "stations"
 
-    id = Column(UUID, primary_key=True, index=True)
+    id = Column(UUID, primary_key=True, default=uuid4, index=True)
     external_id = Column(String, nullable=True)
 
     name = Column(String)

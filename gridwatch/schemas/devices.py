@@ -1,5 +1,5 @@
 from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
@@ -28,7 +28,6 @@ class DeviceSchema(BaseModel):
 
 
 class DeviceCreateSchema(BaseModel):
-    id: UUID = uuid4()
     device_type: DeviceType
     component_id: UUID
     component_type: ComponentType

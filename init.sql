@@ -1,5 +1,6 @@
 -- A simple SQL script to populate the database, this should be solved by a migration tool like Alembic but this was easy enough for now
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Type definitions
 
@@ -29,7 +30,7 @@ CREATE TABLE IF NOT EXISTS customers (
 );
 
 CREATE TABLE IF NOT EXISTS devices (
-        id UUID NOT NULL,
+        id UUID DEFAULT uuid_generate_v4() NOT NULL,
         name VARCHAR,
         device_type devicetype,
         component_id UUID,
@@ -48,7 +49,7 @@ CREATE TABLE IF NOT EXISTS devices (
 );
 
 CREATE TABLE IF NOT EXISTS stations (
-        id UUID NOT NULL,
+        id UUID DEFAULT uuid_generate_v4() NOT NULL,
         external_id VARCHAR,
         name VARCHAR,
         customer_id UUID,
@@ -67,7 +68,7 @@ CREATE TABLE IF NOT EXISTS stations (
 );
 
 CREATE TABLE IF NOT EXISTS transformers (
-        id UUID NOT NULL,
+        id UUID DEFAULT uuid_generate_v4() NOT NULL,
         name VARCHAR,
         customer_id UUID,
         station_id UUID NOT NULL,
@@ -80,7 +81,7 @@ CREATE TABLE IF NOT EXISTS transformers (
 );
 
 CREATE TABLE IF NOT EXISTS connections (
-        id UUID NOT NULL,
+        id UUID DEFAULT uuid_generate_v4() NOT NULL,
         name VARCHAR,
         customer_id UUID,
         transformer_id UUID NOT NULL,
@@ -93,7 +94,7 @@ CREATE TABLE IF NOT EXISTS connections (
 );
 
 CREATE TABLE IF NOT EXISTS measurements (
-        id UUID NOT NULL,
+        id UUID DEFAULT uuid_generate_v4() NOT NULL,
         station_id UUID,
         transformer_id UUID,
         connection_id UUID,

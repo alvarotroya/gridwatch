@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from sqlalchemy import TIMESTAMP, UUID, Column, Enum, Float, ForeignKey, func
 from sqlalchemy.orm import relationship
 
@@ -8,7 +10,7 @@ from gridwatch.models.enums import MeasurementType
 class MeasurementModel(Base):
     __tablename__ = "measurements"
 
-    id = Column(UUID, primary_key=True, index=True)
+    id = Column(UUID, primary_key=True, default=uuid4, index=True)
     station_id = Column(UUID, ForeignKey("stations.id"), nullable=True)
     transformer_id = Column(UUID, ForeignKey("transformers.id"), nullable=True)
     connection_id = Column(UUID, ForeignKey("connections.id"), nullable=True)

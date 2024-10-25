@@ -1,5 +1,5 @@
 from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
@@ -28,7 +28,6 @@ class MeasurementSchema(BaseModel):
 class MeasurementAPICreateSchema(BaseModel):
     """This is the payload used to create a new measurement."""
 
-    id: UUID = uuid4()
     device_id: UUID
 
     value: float

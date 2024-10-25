@@ -1,5 +1,5 @@
 from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
@@ -17,7 +17,6 @@ class TransformerSchema(BaseModel):
 
 
 class TransformerCreateSchema(BaseModel):
-    id: UUID = uuid4()
     station_id: UUID
     name: str
     external_id: str | None = None
