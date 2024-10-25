@@ -16,6 +16,11 @@ class ConnectionSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class ConnectionAPICreateSchema(BaseModel):
+    name: str
+    external_id: str | None = None
+
+
 class ConnectionCreateSchema(BaseModel):
     transformer_id: UUID
     name: str

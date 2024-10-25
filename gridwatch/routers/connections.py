@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 from gridwatch.crud import connections as crud_connections
 from gridwatch.database import get_db
 from gridwatch.schemas.connections import (
-    ConnectionCreateSchema,
     ConnectionSchema,
     ConnectionUpdateSchema,
 )
@@ -25,13 +24,6 @@ def get_connections(db: DatabaseDep) -> list[ConnectionSchema]:
 @router.get("/connections/{connection_id}", response_model=ConnectionSchema)
 def get_connection(connection_id: UUID, db: DatabaseDep) -> ConnectionSchema:
     return crud_connections.get_connection(db, connection_id)
-
-
-@router.post("/connections", response_model=ConnectionSchema)
-def post_connection(
-    connection_create: ConnectionCreateSchema, db: DatabaseDep
-) -> ConnectionSchema:
-    return crud_connections.create_connection(db, connection_create)
 
 
 @router.patch("/connections/{connection_id}", response_model=ConnectionSchema)
