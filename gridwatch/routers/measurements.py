@@ -1,11 +1,15 @@
 from typing import Annotated
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from gridwatch.crud import measurements as crud_measurements
 from gridwatch.database import get_db
+from gridwatch.models.connections import ConnectionModel
+from gridwatch.models.devices import DeviceModel
+from gridwatch.models.enums import ComponentType
+from gridwatch.models.transformers import TransformerModel
 from gridwatch.schemas.measurements import (
     MeasurementAPICreateSchema,
     MeasurementDatabaseCreateSchema,
@@ -55,11 +59,39 @@ def delete_measurement(measurement_id: UUID, db: DatabaseDep) -> MeasurementSche
 def create_database_measurement(
     db: Session, measurement: MeasurementAPICreateSchema
 ) -> MeasurementSchema:
-    # TODO: do some magic to determine component information
+    device = db.query(DeviceModel).filter(DeviceModel.id == measurement.device_id).one()
+
+    match device.component_type:
+        case ComponentType.CONNECTION:
+            connection = (
+                db.query(ConnectionModel)
+                .filter(ConnectionModel.id == device.component_id)
+                .one()
+            )
+            connection_id = UUID(str(connection.id))
+            transformer_id = connection.transformer.id
+            station_id = connection.transformer.station.id
+
+        case ComponentType.TRANSFORMER:
+            transformer = (
+                db.query(TransformerModel)
+                .filter(TransformerModel.id == device.component_id)
+                .one()
+            )
+            connection_id = None
+            transformer_id = UUID(str(transformer.id))
+            station_id = transformer.station.id
+
+        case _:
+            raise ValueError(
+                f"Device of component type '{str(device.component_type)}' is not supported."
+            )
+
     measurement_db_create = MeasurementDatabaseCreateSchema(
         **measurement.model_dump(),
-        station_id=uuid4(),
-        transformer_id=uuid4(),
-        connection_id=uuid4(),
+        station_id=station_id,
+        transformer_id=transformer_id,
+        connection_id=connection_id,
     )
+
     return crud_measurements.create_measurement(db, measurement_db_create)
