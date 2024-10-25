@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from gridwatch import database
@@ -28,10 +29,19 @@ app.include_router(measurements_router, tags=["Measurements"])
 
 # Global error handling for uncatched `DatabaseEntityNotFound` errors -> return 404
 @app.exception_handler(DatabaseEntityNotFound)
-async def custom_exception_handler(_request, exc: DatabaseEntityNotFound):
+async def handle_no_database_found_errors(_request, exc: DatabaseEntityNotFound):
     raise HTTPException(
         status_code=404,
         detail=str(exc),
+    )
+
+
+# Global error handling for uncatched `sqlalchemy.IntegrityErrors` errors -> return 404
+@app.exception_handler(IntegrityError)
+async def handle_foreignkey_violation_errors(_request):
+    raise HTTPException(
+        status_code=400,
+        detail="Creation failed. No record found for the provided UUID.",
     )
 
 
