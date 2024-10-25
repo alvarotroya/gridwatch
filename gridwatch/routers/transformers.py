@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 from gridwatch.crud import transformers as crud_transformers
 from gridwatch.database import get_db
 from gridwatch.schemas.transformers import (
-    TransformerCreateSchema,
     TransformerSchema,
     TransformerUpdateSchema,
 )
@@ -25,13 +24,6 @@ def get_transformers(db: DatabaseDep) -> list[TransformerSchema]:
 @router.get("/transformers/{transformer_id}", response_model=TransformerSchema)
 def get_transformer(transformer_id: UUID, db: DatabaseDep) -> TransformerSchema:
     return crud_transformers.get_transformer(db, transformer_id)
-
-
-@router.post("/transformers", response_model=TransformerSchema)
-def post_transformer(
-    transformer_create: TransformerCreateSchema, db: DatabaseDep
-) -> TransformerSchema:
-    return crud_transformers.create_transformer(db, transformer_create)
 
 
 @router.patch("/transformers/{transformer_id}", response_model=TransformerSchema)

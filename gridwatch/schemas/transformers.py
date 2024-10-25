@@ -16,6 +16,11 @@ class TransformerSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class TransformerAPICreateSchema(BaseModel):
+    name: str
+    external_id: str | None = None
+
+
 class TransformerCreateSchema(BaseModel):
     station_id: UUID
     name: str

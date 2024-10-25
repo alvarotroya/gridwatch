@@ -7,6 +7,7 @@ from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
 from gridwatch.crud import stations as crud_stations
+from gridwatch.crud import transformers as crud_transformers
 from gridwatch.database import get_db
 from gridwatch.models.measurements import MeasurementModel
 from gridwatch.schemas.measurements import MeasurementSchema
@@ -14,6 +15,11 @@ from gridwatch.schemas.stations import (
     StationCreateSchema,
     StationSchema,
     StationUpdateSchema,
+)
+from gridwatch.schemas.transformers import (
+    TransformerAPICreateSchema,
+    TransformerCreateSchema,
+    TransformerSchema,
 )
 
 router = APIRouter()
@@ -52,6 +58,16 @@ def delete_station(station_id: UUID, db: DatabaseDep) -> StationSchema:
 
 
 # Navigations
+
+
+@router.post("/stations/{station_id}/transformers", response_model=TransformerSchema)
+def post_transformer(
+    station_id: UUID, transformer_create: TransformerAPICreateSchema, db: DatabaseDep
+) -> TransformerSchema:
+    transformer_db_create = TransformerCreateSchema(
+        **transformer_create.model_dump(), station_id=station_id
+    )
+    return crud_transformers.create_transformer(db, transformer_db_create)
 
 
 @router.get(
