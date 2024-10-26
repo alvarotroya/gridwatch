@@ -1,8 +1,8 @@
 # Development log
 
 This file contains some notes I took while creating the application. They serve
-the purpose of documenting the process and helping me to have remember some
-aspects that might be of interest for future discussions on the decisions and
+the purpose of documenting the process and helping me remember some
+aspects that might be of interest for future discussions about the decisions and
 approaches I used.
 
 ## Setting up the project
@@ -23,12 +23,13 @@ of Rust's `cargo`.
 
 I went with FastAPI because of my current experience with it, it's ease of use
 and because it allows me to iterate quickly with a really smooth developer
-experience. Also it takes care of a lot of the payload validations automatically.
+experience. It takes care of a bunch of payload validations automatically
+and also comes with a Swagger/OpenAPI docs page for free.
 
 ### Project structure
 
 I'm using the usual Python package structure of having `src` be named as the
-project name. In there I create multiple files to separate different the
+project name. In there, I create multiple files to separate the different
 definitions of routes, data model entities and their database representation.
 
 ## Implementing the solution
@@ -42,27 +43,28 @@ I'm using PostgreSQL running on Docker. Reason: Data Model is clearly
 structured and PostgreSQL scales very well within the expected load.
 
 Eventually, the database will probably become the bottleneck but we can deal
-with that later by sharding or using replicas or moving to something like
-DynamoDB or Cassandra.
+with that later. Possible solutions would be vertical scaling, sharding or
+eventually moving to a distributed DB like CockroachDB, Cassandra or DynamoDB.
+This is not something we should plan for at this stage.
 
 Docker compose came from GenAI. I just extracted the credentials to a
 `.env-example` file.
 
 ### Setting up the data model
 
-I decided to use an ORM for wase of use and developer ergonomics. This allows
+I decided to use an ORM for ease of use and developer ergonomics. This allows
 me to reuse a lot of the logic for DB CRUD operations without having to write
 custom SQL queries which are not required for now. I am using SQLAlchemy and
 used GenAI to set up the code responsible for establishing a connection.
-Reason: the FastAPI documentation has removed the code snippet to set this up
-as they now favor `SQLModel`, an ORM package different than `SQLAlchemy`.
+Reason: the FastAPI documentation has replaced `SQLAlchemy` in favor of
+`SQLModel`, a wrapper of SQLAlchemy written by the FastAPI author.
 
 #### Adding stations
 
 Data model
 
 - Added a customer entity to separate data between different customers.
-Column is nullable for now for easier testing. Auth & RBAC is out of scope for
+Column is nullable for now for easier testing. Auth & RBAC are out of scope for
 now.
 - Kept all column types as Strings(=varchar 255) for simplicity.
 - For better UX, we should add an endpoint to produce address suggestions based
@@ -120,4 +122,3 @@ Endpoints
 - A GET endpoint to read measurements from a specific station. Implements
 pagination, allows passing query params for transformer/connection ID, and
 start and end date to query for a specific time range.
-
