@@ -20,22 +20,22 @@ Tech Stack: FastAPI, SQLAlchemy, PostgreSQL, Docker.
 1. Install cargo (for uv):
 [https://www.rust-lang.org/tools/install](https://www.rust-lang.org/tools/install)
 
-1. Install uv:
+2. Install uv:
 [https://docs.astral.sh/uv/getting-started/installation/](https://docs.astral.sh/uv/getting-started/installation/)
 
-1. Clone the repository:
+3. Clone the repository:
 
   ```bash
   git clone https://github.com/alvarotroya/gridwatch
   ```
 
-1. Navigate to the project directory:
+4. Navigate to the project directory:
 
   ```bash
   cd gridwatch
   ```
 
-1. Set up dev environment:
+5. Set up dev environment:
 
   ```bash
   uv python install 3.12
@@ -43,31 +43,31 @@ Tech Stack: FastAPI, SQLAlchemy, PostgreSQL, Docker.
   source .venv/bin/activate
   ```
 
-1. Install pre-commit hooks:
+6. Install pre-commit hooks (optional):
 
   ```bash
   pre-commit install --hook-type pre-commit --hook-type pre-push
   ```
 
-1. Set up database credentials
+7. Set up database credentials
 
   ```bash
   cp .env-example .env
   ```
 
-1. Start the database
+8. Start the database
 
   ```bash
   docker-compose up -d
   ```
 
-1. Start the server
+9. Start the server
 
   ```bash
   fastapi dev gridwatch/main.py
   ```
 
-1. Visit the OpenAPI documentation at [localhost:8000/docs](localhost:8000/docs).
+10. Visit the OpenAPI documentation at [localhost:8000/docs](localhost:8000/docs).
 
 ## Future development
 
