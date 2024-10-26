@@ -36,7 +36,7 @@ async def handle_no_database_found_errors(_request, exc: DatabaseEntityNotFound)
     )
 
 
-# Global error handling for uncatched `sqlalchemy.IntegrityErrors` errors -> return 404
+# Global error handling for uncatched foreignkey constraint violation errors. -> return 400
 @app.exception_handler(IntegrityError)
 async def handle_foreignkey_violation_errors(_request):
     raise HTTPException(
