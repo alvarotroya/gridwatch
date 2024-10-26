@@ -119,12 +119,12 @@ CREATE TABLE IF NOT EXISTS measurements (
 
 INSERT INTO public.stations
 (id, "name", customer_id, street, house_number, city, state, zip_code, country, latitude, longitude, created_at, updated_at, external_id)
-VALUES('10000000-0000-0000-0000-000000000000'::uuid, 'Station 1', NULL, 'Zeppelinstraße', '7d', 'Karlsruhe', 'Baden-Württemberg', '76185', 'Germany', 49.002403, 8.364468, '2024-10-22 08:07:44.752', '2024-10-22 08:07:44.752', 'station_1_external_id')
+VALUES('10000000-0000-0000-0000-000000000000'::uuid, 'Station 1', NULL, 'Marktplatz', '42', 'Karlsruhe', 'Baden-Württemberg', '76137', 'Germany', 49.002703, 9.364468, '2024-10-22 08:07:44.752', '2024-10-22 08:07:44.752', 'station_1_external_id')
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO public.stations
 (id, "name", customer_id, street, house_number, city, state, zip_code, country, latitude, longitude, created_at, updated_at, external_id)
-VALUES('20000000-0000-0000-0000-000000000000'::uuid, 'Station 2', NULL, 'Grünwinkel', '15', 'Karlsruhe', 'Baden-Württemberg', '76185', 'Germany', 49.002403, 8.364468, '2024-10-22 09:07:44.752', '2024-10-22 08:07:44.752', 'station_2_external_id')
+VALUES('20000000-0000-0000-0000-000000000000'::uuid, 'Station 2', NULL, 'Grünwinkel', '12', 'Karlsruhe', 'Baden-Württemberg', '76185', 'Germany', 49.002003, 7.364468, '2024-10-22 09:07:44.752', '2024-10-22 08:07:44.752', 'station_2_external_id')
 ON CONFLICT (id) DO NOTHING;
 
 -- Transformers
