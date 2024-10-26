@@ -25,47 +25,47 @@ Tech Stack: FastAPI, SQLAlchemy, PostgreSQL, Docker.
 
 1. Clone the repository:
 
-```bash
-git clone https://github.com/alvarotroya/gridwatch
-```
+  ```bash
+  git clone https://github.com/alvarotroya/gridwatch
+  ```
 
 1. Navigate to the project directory:
 
-```bash
-cd gridwatch
-```
+  ```bash
+  cd gridwatch
+  ```
 
 1. Set up dev environment:
 
-```bash
-uv python install 3.12
-uv venv
-source .venv/bin/activate
-```
+  ```bash
+  uv python install 3.12
+  uv venv
+  source .venv/bin/activate
+  ```
 
 1. Install pre-commit hooks:
 
-```bash
-pre-commit install --hook-type pre-commit --hook-type pre-push
-```
+  ```bash
+  pre-commit install --hook-type pre-commit --hook-type pre-push
+  ```
 
 1. Set up database credentials
 
-```bash
-cp .env-example .env
-```
+  ```bash
+  cp .env-example .env
+  ```
 
 1. Start the database
 
-```bash
-docker-compose up -d
-```
+  ```bash
+  docker-compose up -d
+  ```
 
 1. Start the server
 
-```bash
-fastapi dev gridwatch/main.py
-```
+  ```bash
+  fastapi dev gridwatch/main.py
+  ```
 
 1. Visit the OpenAPI documentation at [localhost:8000/docs](localhost:8000/docs).
 
