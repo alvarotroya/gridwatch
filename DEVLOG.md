@@ -92,3 +92,32 @@ Endpoints
 - A PATCH request to specific fields in a device config/spec will not work as
 expected :/ They will replace the whole config/spec, instead of updating the
 specified fields only. Left a comment in the code, should be fixed before prod :)
+
+#### Adding measurements
+
+Data model
+
+- Added all the components hierarchy explicitly to each measurement.
+When persisting a measurement received from device X, we look up the component
+that the device is attached to, and the corresponding
+connection/transformer/station ID. We store all those IDs in the table
+directly. This makes READs more performant, avoiding joins when querying data
+for specific components, for the price of being a bit more work on WRITEs.
+- Added `measured_at` and `sent_at` timestamps to measure the latency of the system.
+My assumption is that devices of type `SENSOR` gather measurements and
+communicate those to devices of type `EDGE`. There they are grouped into
+batches that are sent to the application via an HTTP POST. Once we start
+processing the measurements asynchronously in our application (to reduce the
+stress on the system when spikes in the measurements endpoint are detected), we
+might also introduce latency between the time a measurement is received until a
+measurement is persisted (and available to API clients). These two new fields,
+together with the `created_at` timestamp, will allow to measure that latency
+and assign it to the correct step of the process.
+
+Endpoints
+
+- A POST endpoint for creating measurements in batches and as individual entities.
+- A GET endpoint to read measurements from a specific station. Implements
+pagination, allows passing query params for transformer/connection ID, and
+start and end date to query for a specific time range.
+
