@@ -72,7 +72,7 @@ Tech Stack: FastAPI, SQLAlchemy, PostgreSQL, Docker.
 ## Future development
 
 - [ ] Profile the endpoints using [yappi](https://github.com/sumerc/yappi).
-- [ ] Load test the `POST` measurements endpoints to using [Locust](https://locust.io/).
+- [ ] Load-test the `POST` measurements endpoint using [Locust](https://locust.io/).
 - [ ] Use [Celery](https://github.com/celery/celery) and RabbitMQ/Redis to
 process measurements asynchronously via a queue.
 - [ ] Measure latency:
@@ -85,8 +85,8 @@ process measurements asynchronously via a queue.
   - How well can a single server instance handle the load?
   - How well can a single server running the application in multiple threads
   handle the load?
-  - How well can multiple servers (2,3,4,...) running behind a load balancer
-  handle the load? Does the database become the bottleneck?
+  - How well can multiple servers (2, 3, 4, ...) running behind a load balancer
+  handle the load? Does the database become the bottleneck at some point?
   - How well can a single server and the same setup handle the load when
   queueing measurements for writes instead of persisiting them directly?
   - How does latency change between both setups?
