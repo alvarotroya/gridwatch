@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from gridwatch.models.enums import MeasurementType
 
@@ -18,6 +18,7 @@ class MeasurementSchema(BaseModel):
 
     measured_at: datetime
     sent_at: datetime
+    received_at: datetime
 
     created_at: datetime
     updated_at: datetime
@@ -43,6 +44,8 @@ class MeasurementDatabaseCreateSchema(MeasurementAPICreateSchema):
     station_id: UUID | None = None
     transformer_id: UUID | None = None
     connection_id: UUID | None = None
+
+    received_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class MeasurementUpdateSchema(BaseModel):

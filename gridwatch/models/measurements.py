@@ -20,6 +20,7 @@ class MeasurementModel(Base):
     measurement_type = Column(Enum(MeasurementType))
     measured_at = Column(TIMESTAMP)
     sent_at = Column(TIMESTAMP)
+    received_at = Column(TIMESTAMP)
 
     customer_id = Column(UUID, ForeignKey("customers.id"))
 
