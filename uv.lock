@@ -473,6 +473,7 @@ dependencies = [
 dev = [
     { name = "coverage" },
     { name = "locust" },
+    { name = "locust-plugins", extra = ["dashboards"] },
     { name = "mypy" },
     { name = "pre-commit" },
     { name = "pytest" },
@@ -492,6 +493,7 @@ requires-dist = [
 dev = [
     { name = "coverage", specifier = ">=7.6.3" },
     { name = "locust", specifier = ">=2.32.3" },
+    { name = "locust-plugins", extras = ["dashboards"], specifier = ">=4.5.3" },
     { name = "mypy", specifier = ">=1.12.1" },
     { name = "pre-commit", specifier = ">=4.0.1" },
     { name = "pytest", specifier = ">=8.3.3" },
@@ -629,6 +631,25 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/cc/4c/3f7ab09636188379d8d76748fe87ce115a36d725d2103a6f9c012e462408/locust-2.32.3.tar.gz", hash = "sha256:2b92df32c414a272dde321da4afd9e148b5fec32213fe2a260885a469374132b", size = 1193799 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fe/87/a95d82cace086cfb0dc8d5417dc068779a653aaaf7aa5b266aa47f142131/locust-2.32.3-py3-none-any.whl", hash = "sha256:ebfce96f82b0b31418a498ae97724fdba9a41754e88471de56920339f3974347", size = 1211120 },
+]
+
+[[package]]
+name = "locust-plugins"
+version = "4.5.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "locust" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/16/a6/4cae6851b6a6cf94fd31b361bdad0c71be26748efe51d8ce769e1db16a80/locust_plugins-4.5.3.tar.gz", hash = "sha256:99e6301178f5a58ac2ce447971b4773c017259540e4a22e92108e71e86ca31c5", size = 1402949 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/39/bf/4a834d95213bb52b07dfe361ee5b3c1caa345ca121bdc389649f9ae560f9/locust_plugins-4.5.3-py3-none-any.whl", hash = "sha256:585faff85fc8517103d36b6603db75fb5dcea724e77efc8daec5f873767f6bbd", size = 1394794 },
+]
+
+[package.optional-dependencies]
+dashboards = [
+    { name = "psycogreen" },
+    { name = "psycopg2-binary" },
 ]
 
 [[package]]
@@ -820,6 +841,12 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/ea/55/5389ed243c878725feffc0d6a3bc5ef6764312b6fc7c081faaa2cfa7ef37/psutil-6.1.0-cp37-abi3-win32.whl", hash = "sha256:1ad45a1f5d0b608253b11508f80940985d1d0c8f6111b5cb637533a0e6ddc13e", size = 250386 },
     { url = "https://files.pythonhosted.org/packages/11/91/87fa6f060e649b1e1a7b19a4f5869709fbf750b7c8c262ee776ec32f3028/psutil-6.1.0-cp37-abi3-win_amd64.whl", hash = "sha256:a8fb3752b491d246034fa4d279ff076501588ce8cbcdbb62c32fd7a377d996be", size = 254228 },
 ]
+
+[[package]]
+name = "psycogreen"
+version = "1.0.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/eb/72/4a7965cf54e341006ad74cdc72cd6572c789bc4f4e3fadc78672f1fbcfbd/psycogreen-1.0.2.tar.gz", hash = "sha256:c429845a8a49cf2f76b71265008760bcd7c7c77d80b806db4dc81116dbcd130d", size = 5411 }
 
 [[package]]
 name = "psycopg2-binary"
