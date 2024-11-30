@@ -5,6 +5,7 @@ description = "A simple CRUD API to store measurements from IoT devices monitori
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "asyncpg>=0.30.0",
     "fastapi[standard]>=0.115.2",
     "psycopg2-binary>=2.9.10",
     "pydantic-settings>=2.6.0",

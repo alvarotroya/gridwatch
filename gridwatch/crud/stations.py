@@ -1,6 +1,7 @@
 from uuid import UUID
 
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
 from gridwatch.crud.exceptions import DatabaseEntityNotFound
 from gridwatch.models.stations import StationModel
@@ -11,15 +12,15 @@ from gridwatch.schemas.stations import (
 )
 
 
-def get_stations(db: Session) -> list[StationSchema]:
-    return [
-        StationSchema.model_validate(station)
-        for station in db.query(StationModel).all()
-    ]
+async def get_stations(db: AsyncSession) -> list[StationSchema]:
+    result = await db.execute(select(StationModel))
+    stations = result.scalars().all()
+    return [StationSchema.model_validate(station) for station in stations]
 
 
-def get_station(db: Session, station_id: UUID) -> StationSchema:
-    station = db.query(StationModel).filter(StationModel.id == station_id).first()
+async def get_station(db: AsyncSession, station_id: UUID) -> StationSchema:
+    result = await db.execute(select(StationModel).where(StationModel.id == station_id))
+    station = result.scalar()
 
     if station is None:
         raise DatabaseEntityNotFound(f"Could not find Station with id {station_id}")
@@ -27,20 +28,21 @@ def get_station(db: Session, station_id: UUID) -> StationSchema:
     return StationSchema.model_validate(station)
 
 
-def create_station(db: Session, station_create: StationCreateSchema) -> StationSchema:
+async def create_station(
+    db: AsyncSession, station_create: StationCreateSchema
+) -> StationSchema:
     station = StationModel(**station_create.model_dump())
     db.add(station)
-    db.commit()
-
-    db.refresh(station)
-
+    await db.commit()
+    await db.refresh(station)
     return StationSchema.model_validate(station)
 
 
-def update_station(
-    db: Session, station_id: UUID, station_update: StationUpdateSchema
+async def update_station(
+    db: AsyncSession, station_id: UUID, station_update: StationUpdateSchema
 ) -> StationSchema:
-    station = db.query(StationModel).filter(StationModel.id == station_id).first()
+    result = await db.execute(select(StationModel).where(StationModel.id == station_id))
+    station = result.scalar()
 
     if station is None:
         raise DatabaseEntityNotFound(f"Could not find Station with id {station_id}")
@@ -49,19 +51,18 @@ def update_station(
     for key, value in station_update.model_dump(exclude_unset=True).items():
         setattr(station, key, value)
 
-    db.commit()
-    db.refresh(station)
-
+    await db.commit()
+    await db.refresh(station)
     return StationSchema.model_validate(station)
 
 
-def delete_station(db: Session, station_id: UUID) -> StationSchema:
-    station = db.query(StationModel).filter(StationModel.id == station_id).first()
+async def delete_station(db: AsyncSession, station_id: UUID) -> StationSchema:
+    result = await db.execute(select(StationModel).where(StationModel.id == station_id))
+    station = result.scalar()
 
     if station is None:
         raise DatabaseEntityNotFound(f"Could not find Station with id {station_id}")
 
-    db.delete(station)
-    db.commit()
-
+    await db.delete(station)
+    await db.commit()
     return StationSchema.model_validate(station)

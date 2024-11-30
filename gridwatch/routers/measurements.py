@@ -2,7 +2,8 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
 from gridwatch.crud import measurements as crud_measurements
 from gridwatch.database import get_db
@@ -18,28 +19,28 @@ from gridwatch.schemas.measurements import (
 
 router = APIRouter()
 
-DatabaseDep = Annotated[Session, Depends(get_db)]
+DatabaseDep = Annotated[AsyncSession, Depends(get_db)]
 
 
 @router.get("/measurements", response_model=list[MeasurementSchema])
-def get_measurements(db: DatabaseDep) -> list[MeasurementSchema]:
-    return crud_measurements.get_measurements(db)
+async def get_measurements(db: DatabaseDep) -> list[MeasurementSchema]:
+    return await crud_measurements.get_measurements(db)
 
 
 @router.get("/measurements/{measurement_id}", response_model=MeasurementSchema)
-def get_measurement(measurement_id: UUID, db: DatabaseDep) -> MeasurementSchema:
-    return crud_measurements.get_measurement(db, measurement_id)
+async def get_measurement(measurement_id: UUID, db: DatabaseDep) -> MeasurementSchema:
+    return await crud_measurements.get_measurement(db, measurement_id)
 
 
 @router.post("/measurements", response_model=MeasurementSchema)
-def post_measurement(
+async def post_measurement(
     measurement_create: MeasurementAPICreateSchema, db: DatabaseDep
 ) -> MeasurementSchema:
-    return create_database_measurement(db, measurement_create)
+    return await create_database_measurement(db, measurement_create)
 
 
 @router.post("/measurements/bulk", response_model=list[MeasurementSchema])
-def post_measurements(
+async def post_measurements(
     measurements_create: list[MeasurementAPICreateSchema], db: DatabaseDep
 ) -> list[MeasurementSchema]:
     results = []
@@ -51,33 +52,42 @@ def post_measurements(
 
 
 @router.delete("/measurements/{measurement_id}", response_model=MeasurementSchema)
-def delete_measurement(measurement_id: UUID, db: DatabaseDep) -> MeasurementSchema:
-    return crud_measurements.delete_measurement(db, measurement_id)
+async def delete_measurement(
+    measurement_id: UUID, db: DatabaseDep
+) -> MeasurementSchema:
+    return await crud_measurements.delete_measurement(db, measurement_id)
 
 
 # TODO: extract to a separate method/file and write tests for this
-def create_database_measurement(
-    db: Session, measurement: MeasurementAPICreateSchema
+async def create_database_measurement(
+    db: AsyncSession, measurement: MeasurementAPICreateSchema
 ) -> MeasurementSchema:
-    device = db.query(DeviceModel).filter(DeviceModel.id == measurement.device_id).one()
+    # Fetch the device
+    device_result = await db.execute(
+        select(DeviceModel).filter(DeviceModel.id == measurement.device_id)
+    )
+    device = device_result.scalar_one()
 
+    # Match device component type
     match device.component_type:
         case ComponentType.CONNECTION:
-            connection = (
-                db.query(ConnectionModel)
-                .filter(ConnectionModel.id == device.component_id)
-                .one()
+            connection_result = await db.execute(
+                select(ConnectionModel).filter(
+                    ConnectionModel.id == device.component_id
+                )
             )
+            connection = connection_result.scalar_one()
             connection_id = UUID(str(connection.id))
             transformer_id = connection.transformer.id
             station_id = connection.transformer.station.id
 
         case ComponentType.TRANSFORMER:
-            transformer = (
-                db.query(TransformerModel)
-                .filter(TransformerModel.id == device.component_id)
-                .one()
+            transformer_result = await db.execute(
+                select(TransformerModel).filter(
+                    TransformerModel.id == device.component_id
+                )
             )
+            transformer = transformer_result.scalar_one()
             connection_id = None
             transformer_id = UUID(str(transformer.id))
             station_id = transformer.station.id
@@ -94,4 +104,4 @@ def create_database_measurement(
         connection_id=connection_id,
     )
 
-    return crud_measurements.create_measurement(db, measurement_db_create)
+    return await crud_measurements.create_measurement(db, measurement_db_create)

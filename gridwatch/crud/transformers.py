@@ -1,6 +1,7 @@
 from uuid import UUID
 
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
 from gridwatch.crud.exceptions import DatabaseEntityNotFound
 from gridwatch.models.transformers import TransformerModel
@@ -11,17 +12,19 @@ from gridwatch.schemas.transformers import (
 )
 
 
-def get_transformers(db: Session) -> list[TransformerSchema]:
+async def get_transformers(db: AsyncSession) -> list[TransformerSchema]:
+    result = await db.execute(select(TransformerModel))
+    transformers = result.scalars().all()
     return [
-        TransformerSchema.model_validate(transformer)
-        for transformer in db.query(TransformerModel).all()
+        TransformerSchema.model_validate(transformer) for transformer in transformers
     ]
 
 
-def get_transformer(db: Session, transformer_id: UUID) -> TransformerSchema:
-    transformer = (
-        db.query(TransformerModel).filter(TransformerModel.id == transformer_id).first()
+async def get_transformer(db: AsyncSession, transformer_id: UUID) -> TransformerSchema:
+    result = await db.execute(
+        select(TransformerModel).where(TransformerModel.id == transformer_id)
     )
+    transformer = result.scalar()
 
     if transformer is None:
         raise DatabaseEntityNotFound(
@@ -31,24 +34,23 @@ def get_transformer(db: Session, transformer_id: UUID) -> TransformerSchema:
     return TransformerSchema.model_validate(transformer)
 
 
-def create_transformer(
-    db: Session, transformer_create: TransformerCreateSchema
+async def create_transformer(
+    db: AsyncSession, transformer_create: TransformerCreateSchema
 ) -> TransformerSchema:
     transformer = TransformerModel(**transformer_create.model_dump())
     db.add(transformer)
-    db.commit()
-
-    db.refresh(transformer)
-
+    await db.commit()
+    await db.refresh(transformer)
     return TransformerSchema.model_validate(transformer)
 
 
-def update_transformer(
-    db: Session, transformer_id: UUID, transformer_update: TransformerUpdateSchema
+async def update_transformer(
+    db: AsyncSession, transformer_id: UUID, transformer_update: TransformerUpdateSchema
 ) -> TransformerSchema:
-    transformer = (
-        db.query(TransformerModel).filter(TransformerModel.id == transformer_id).first()
+    result = await db.execute(
+        select(TransformerModel).where(TransformerModel.id == transformer_id)
     )
+    transformer = result.scalar()
 
     if transformer is None:
         raise DatabaseEntityNotFound(
@@ -59,23 +61,24 @@ def update_transformer(
     for key, value in transformer_update.model_dump(exclude_unset=True).items():
         setattr(transformer, key, value)
 
-    db.commit()
-    db.refresh(transformer)
-
+    await db.commit()
+    await db.refresh(transformer)
     return TransformerSchema.model_validate(transformer)
 
 
-def delete_transformer(db: Session, transformer_id: UUID) -> TransformerSchema:
-    transformer = (
-        db.query(TransformerModel).filter(TransformerModel.id == transformer_id).first()
+async def delete_transformer(
+    db: AsyncSession, transformer_id: UUID
+) -> TransformerSchema:
+    result = await db.execute(
+        select(TransformerModel).where(TransformerModel.id == transformer_id)
     )
+    transformer = result.scalar()
 
     if transformer is None:
         raise DatabaseEntityNotFound(
             f"Could not find Transformer with id {transformer_id}"
         )
 
-    db.delete(transformer)
-    db.commit()
-
+    await db.delete(transformer)
+    await db.commit()
     return TransformerSchema.model_validate(transformer)

@@ -1,7 +1,8 @@
 from uuid import UUID
 
 from sqlalchemy import desc
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
 from gridwatch.crud.exceptions import DatabaseEntityNotFound
 from gridwatch.models.measurements import MeasurementModel
@@ -12,19 +13,21 @@ from gridwatch.schemas.measurements import (
 )
 
 
-def get_measurements(db: Session) -> list[MeasurementSchema]:
+async def get_measurements(db: AsyncSession) -> list[MeasurementSchema]:
+    result = await db.execute(
+        select(MeasurementModel).order_by(desc(MeasurementModel.measured_at))
+    )
+    measurements = result.scalars().all()
     return [
-        MeasurementSchema.model_validate(measurement)
-        for measurement in db.query(MeasurementModel)
-        .order_by(desc(MeasurementModel.measured_at))
-        .all()
+        MeasurementSchema.model_validate(measurement) for measurement in measurements
     ]
 
 
-def get_measurement(db: Session, measurement_id: UUID) -> MeasurementSchema:
-    measurement = (
-        db.query(MeasurementModel).filter(MeasurementModel.id == measurement_id).first()
+async def get_measurement(db: AsyncSession, measurement_id: UUID) -> MeasurementSchema:
+    result = await db.execute(
+        select(MeasurementModel).where(MeasurementModel.id == measurement_id)
     )
+    measurement = result.scalar()
 
     if measurement is None:
         raise DatabaseEntityNotFound(
@@ -34,24 +37,23 @@ def get_measurement(db: Session, measurement_id: UUID) -> MeasurementSchema:
     return MeasurementSchema.model_validate(measurement)
 
 
-def create_measurement(
-    db: Session, measurement_create: MeasurementDatabaseCreateSchema
+async def create_measurement(
+    db: AsyncSession, measurement_create: MeasurementDatabaseCreateSchema
 ) -> MeasurementSchema:
     measurement = MeasurementModel(**measurement_create.model_dump())
     db.add(measurement)
-    db.commit()
-
-    db.refresh(measurement)
-
+    await db.commit()
+    await db.refresh(measurement)
     return MeasurementSchema.model_validate(measurement)
 
 
-def update_measurement(
-    db: Session, measurement_id: UUID, measurement_update: MeasurementUpdateSchema
+async def update_measurement(
+    db: AsyncSession, measurement_id: UUID, measurement_update: MeasurementUpdateSchema
 ) -> MeasurementSchema:
-    measurement = (
-        db.query(MeasurementModel).filter(MeasurementModel.id == measurement_id).first()
+    result = await db.execute(
+        select(MeasurementModel).where(MeasurementModel.id == measurement_id)
     )
+    measurement = result.scalar()
 
     if measurement is None:
         raise DatabaseEntityNotFound(
@@ -62,23 +64,24 @@ def update_measurement(
     for key, value in measurement_update.model_dump(exclude_unset=True).items():
         setattr(measurement, key, value)
 
-    db.commit()
-    db.refresh(measurement)
-
+    await db.commit()
+    await db.refresh(measurement)
     return MeasurementSchema.model_validate(measurement)
 
 
-def delete_measurement(db: Session, measurement_id: UUID) -> MeasurementSchema:
-    measurement = (
-        db.query(MeasurementModel).filter(MeasurementModel.id == measurement_id).first()
+async def delete_measurement(
+    db: AsyncSession, measurement_id: UUID
+) -> MeasurementSchema:
+    result = await db.execute(
+        select(MeasurementModel).where(MeasurementModel.id == measurement_id)
     )
+    measurement = result.scalar()
 
     if measurement is None:
         raise DatabaseEntityNotFound(
             f"Could not find Measurement with id {measurement_id}"
         )
 
-    db.delete(measurement)
-    db.commit()
-
+    await db.delete(measurement)
+    await db.commit()
     return MeasurementSchema.model_validate(measurement)

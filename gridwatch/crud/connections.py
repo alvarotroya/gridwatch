@@ -1,6 +1,7 @@
 from uuid import UUID
 
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
 from gridwatch.crud.exceptions import DatabaseEntityNotFound
 from gridwatch.models.connections import ConnectionModel
@@ -11,17 +12,17 @@ from gridwatch.schemas.connections import (
 )
 
 
-def get_connections(db: Session) -> list[ConnectionSchema]:
-    return [
-        ConnectionSchema.model_validate(connection)
-        for connection in db.query(ConnectionModel).all()
-    ]
+async def get_connections(db: AsyncSession) -> list[ConnectionSchema]:
+    result = await db.execute(select(ConnectionModel))
+    connections = result.scalars().all()
+    return [ConnectionSchema.model_validate(connection) for connection in connections]
 
 
-def get_connection(db: Session, connection_id: UUID) -> ConnectionSchema:
-    connection = (
-        db.query(ConnectionModel).filter(ConnectionModel.id == connection_id).first()
+async def get_connection(db: AsyncSession, connection_id: UUID) -> ConnectionSchema:
+    result = await db.execute(
+        select(ConnectionModel).where(ConnectionModel.id == connection_id)
     )
+    connection = result.scalar()
 
     if connection is None:
         raise DatabaseEntityNotFound(
@@ -31,24 +32,23 @@ def get_connection(db: Session, connection_id: UUID) -> ConnectionSchema:
     return ConnectionSchema.model_validate(connection)
 
 
-def create_connection(
-    db: Session, connection_create: ConnectionCreateSchema
+async def create_connection(
+    db: AsyncSession, connection_create: ConnectionCreateSchema
 ) -> ConnectionSchema:
     connection = ConnectionModel(**connection_create.model_dump())
     db.add(connection)
-    db.commit()
-
-    db.refresh(connection)
-
+    await db.commit()
+    await db.refresh(connection)
     return ConnectionSchema.model_validate(connection)
 
 
-def update_connection(
-    db: Session, connection_id: UUID, connection_update: ConnectionUpdateSchema
+async def update_connection(
+    db: AsyncSession, connection_id: UUID, connection_update: ConnectionUpdateSchema
 ) -> ConnectionSchema:
-    connection = (
-        db.query(ConnectionModel).filter(ConnectionModel.id == connection_id).first()
+    result = await db.execute(
+        select(ConnectionModel).where(ConnectionModel.id == connection_id)
     )
+    connection = result.scalar()
 
     if connection is None:
         raise DatabaseEntityNotFound(
@@ -59,23 +59,22 @@ def update_connection(
     for key, value in connection_update.model_dump(exclude_unset=True).items():
         setattr(connection, key, value)
 
-    db.commit()
-    db.refresh(connection)
-
+    await db.commit()
+    await db.refresh(connection)
     return ConnectionSchema.model_validate(connection)
 
 
-def delete_connection(db: Session, connection_id: UUID) -> ConnectionSchema:
-    connection = (
-        db.query(ConnectionModel).filter(ConnectionModel.id == connection_id).first()
+async def delete_connection(db: AsyncSession, connection_id: UUID) -> ConnectionSchema:
+    result = await db.execute(
+        select(ConnectionModel).where(ConnectionModel.id == connection_id)
     )
+    connection = result.scalar()
 
     if connection is None:
         raise DatabaseEntityNotFound(
             f"Could not find Connection with id {connection_id}"
         )
 
-    db.delete(connection)
-    db.commit()
-
+    await db.delete(connection)
+    await db.commit()
     return ConnectionSchema.model_validate(connection)

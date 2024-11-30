@@ -17,14 +17,16 @@ app = FastAPI()
 
 SessionDep = Annotated[Session, Depends(database.get_db)]
 
-# NOTE: This should happen with a migration tool like alembic. For now, this suffices
-database.create_tables_if_not_existent()
-
 app.include_router(stations_router, tags=["Stations"])
 app.include_router(transformers_router, tags=["Transformers"])
 app.include_router(connections_router, tags=["Connections"])
 app.include_router(devices_router, tags=["Devices"])
 app.include_router(measurements_router, tags=["Measurements"])
+
+
+@app.on_event("startup")
+async def startup():
+    await database.init_db()
 
 
 # Global error handling for uncatched `DatabaseEntityNotFound` errors -> return 404
