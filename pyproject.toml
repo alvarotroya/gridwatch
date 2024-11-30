@@ -52,3 +52,13 @@ ignore = [
 [tool.ruff.lint.pyupgrade]
 # Preserve types, even if a file imports `from __future__ import annotations`.
 keep-runtime-typing = true
+
+
+[tool.locust]
+locustfile = "locust_files/single_sensors.py"
+headless = true
+host = "http://127.0.0.1:8000"
+users = 100
+spawn-rate = 10
+run-time = "3m"
+# tags = ["single_sensor"]
