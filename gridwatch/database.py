@@ -6,7 +6,7 @@ from gridwatch.settings import app_settings
 
 DATABASE_URL = f"postgresql+asyncpg://{app_settings.db_user}:{app_settings.db_password}@{app_settings.db_host}:{app_settings.db_port}/{app_settings.db_name}"
 
-engine = create_async_engine(DATABASE_URL, echo=True)
+engine = create_async_engine(DATABASE_URL)
 async_session = sessionmaker(
     engine,
     expire_on_commit=False,

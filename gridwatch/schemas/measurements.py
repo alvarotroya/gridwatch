@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -45,7 +45,7 @@ class MeasurementDatabaseCreateSchema(MeasurementAPICreateSchema):
     transformer_id: UUID | None = None
     connection_id: UUID | None = None
 
-    received_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    received_at: datetime = Field(default_factory=lambda: datetime.now())
 
 
 class MeasurementUpdateSchema(BaseModel):

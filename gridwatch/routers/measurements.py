@@ -4,6 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import joinedload
 
 from gridwatch.crud import measurements as crud_measurements
 from gridwatch.database import get_db
@@ -46,7 +47,8 @@ async def post_measurements(
     results = []
 
     for measurement in measurements_create:
-        results.append(create_database_measurement(db, measurement))
+        measurement_result = await create_database_measurement(db, measurement)
+        results.append(measurement_result)
 
     return results
 
@@ -62,19 +64,22 @@ async def delete_measurement(
 async def create_database_measurement(
     db: AsyncSession, measurement: MeasurementAPICreateSchema
 ) -> MeasurementSchema:
-    # Fetch the device
     device_result = await db.execute(
         select(DeviceModel).filter(DeviceModel.id == measurement.device_id)
     )
     device = device_result.scalar_one()
 
-    # Match device component type
     match device.component_type:
         case ComponentType.CONNECTION:
+            # Eagerly load the transformer and station to avoid lazy-loading issues
             connection_result = await db.execute(
-                select(ConnectionModel).filter(
-                    ConnectionModel.id == device.component_id
+                select(ConnectionModel)
+                .options(
+                    joinedload(ConnectionModel.transformer).joinedload(
+                        TransformerModel.station
+                    )
                 )
+                .filter(ConnectionModel.id == device.component_id)
             )
             connection = connection_result.scalar_one()
             connection_id = UUID(str(connection.id))
@@ -82,10 +87,11 @@ async def create_database_measurement(
             station_id = connection.transformer.station.id
 
         case ComponentType.TRANSFORMER:
+            # Eagerly load the station to avoid lazy-loading issues
             transformer_result = await db.execute(
-                select(TransformerModel).filter(
-                    TransformerModel.id == device.component_id
-                )
+                select(TransformerModel)
+                .options(joinedload(TransformerModel.station))
+                .filter(TransformerModel.id == device.component_id)
             )
             transformer = transformer_result.scalar_one()
             connection_id = None

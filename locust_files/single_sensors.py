@@ -14,7 +14,8 @@ class SensorUser(locust.HttpUser):
 
     @locust.task
     def post_measurement(self):
-        sent_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        sent_at = datetime.datetime.now().isoformat()
+
         self.client.post(
             "/measurements",
             json={
